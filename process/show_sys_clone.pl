@@ -1,7 +1,10 @@
-use VMS::Process qw(process_list);
-use VMS::ProcInfo qw(get_all_proc_info_items);
+#! perl -w
+#
+# Show_Sys_Clone.pl - a clone, more or less, of the output of SHOW
+# SYSTEM. It's in here as a sample of what you can do with the VMS::Process
+# module.
+use VMS::Process qw(process_list get_all_proc_info_items);
 
-#@foo = process_list(({NAME=>"NODENAME", VALUE=>"SPRUCE"}));
 @foo = process_list();
 foreach $pid (sort @foo) {
   $procinfo = get_all_proc_info_items($pid);

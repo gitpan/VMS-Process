@@ -12,34 +12,28 @@ require DynaLoader;
 # Do not simply export all your public functions/methods/constants.
 @EXPORT = qw();
 @EXPORT_OK = qw(&process_list &suspend_process &release_process
-                &kill_process &change_priority);
-$VERSION = '1.00';
+                &kill_process &change_priority &proc_info_names
+                &get_all_proc_info_items       &get_one_proc_info_item
+                &decode_proc_info_bitmap);
+$VERSION = '1.04';
 
 bootstrap VMS::Process $VERSION;
 
-# Preloaded methods go here.
 #sub new {
 #  my($pkg,$pid) = @_;
 #  my $self = { __PID => $pid || $$ };
 #  bless $self, $pkg; 
 #}
-#
+
 #sub one_info { get_one_proc_info_item($_[0]->{__PID}, $_[1]); }
 #sub all_info { get_all_proc_info_items($_[0]->{__PID}) }
-#
-#sub TIEHASH { my $obj = new VMS::Process @_; $obj; }
+
+#sub TIEHASH { my $obj = new VMS::ProcInfo @_; $obj; }
 #sub FETCH   { $_[0]->one_info($_[1]); }
 #sub EXISTS  { grep(/$_[1]/, proc_info_names()) }
-#
+
 # Can't STORE, DELETE, or CLEAR--this is readonly. We'll Do The Right Thing
 # later, when I know what it is...
-#sub STORE   {
-#  my($self,$priv,$val) = @_;
-#  if (defined $val and $val) { $self->add([ $priv ],$self->{__PRMFLG});    }
-#  else                       { $self->remove([ $priv ],$self->{__PRMFLG}); }
-#}
-#sub DELETE  { $_[0]->remove([ $_[1] ],$_[0]->{__PRMFLG}); }
-#sub CLEAR   { $_[0]->remove([ keys %{$_[0]->current_privs} ],$_[0]->{__PRMFLG}) }
 
 #sub FIRSTKEY {
 #  $_[0]->{__PROC_INFO_ITERLIST} = [ proc_info_names() ];
@@ -55,11 +49,14 @@ __END__
 
 =head1 NAME
 
-VMS::Process - Perl extension to manage processes
+VMS::Process - Perl extension to manage processes and retrieve process
+information
 
 =head1 SYNOPSIS
 
   use VMS::Process;
+
+Routines to manage processes:
 
   @pid_list = process_list([@process_characteristics]);
   $WorkedOK = suspend_process($pid);
@@ -68,14 +65,33 @@ VMS::Process - Perl extension to manage processes
   $WorkedOK = change_priority($pid, $priority);
   @char_list = valid_process_chars();
 
+Routine to return a reference to a hash with all the process info for the
+process loaded into it:
+
+  $procinfo = VMS::Process::get_all_proc_info_items(pid);
+  $diolimit = $procinfo->{DIOLM};
+
+Fetch a single piece of info:
+
+  $diolm = VMS::Process::get_one_proc_info_item(pid, "DIOLM");
+
+Decode a bitmap into a hash filled with names, with their values set to
+true or false based on the bitmap.
+
+  $hashref = VMS::Process::decode_proc_info_bitmap("CREPRC_FLAGS", Bitmap);
+  $hashref->{BATCH};
+
+Get a list of valid info names:
+
+  @InfoNames = VMS::Process::proc_info_names;
+
 =head1 DESCRIPTION
 
 VMS::Process allows a perl program to get a list of some or all the
 processes on one or more nodes in the cluster, change process priority,
 suspend, release, or kill them. Normal VMS system security is in effect, so
 a program can't see or modify processes that the process doesn't have the
-privs to see. Once process pids are available, information about those
-processes can be retrieved with the VMS::ProcInfo module.
+privs to see.
 
 =head2 Narrowing down the PID list from C<process_list()>
 
@@ -140,19 +156,31 @@ to C<process_list>. This means you must follow the rules and limitations of
 $PROCESS_SCAN. The biggest being that OR'd items I<must> be of the same
 type. (No ORing NODENAME and USERNAME, for example)
 
-The tests are really primitive. (Like there aren't any right now)
-
 Currently only one modifier may be used for each item.
 
 VMS system security is in force, so process_list() is likely to show fewer
-PIDs than SHOW SYSTEM will. Nothing we can do about that, short if INSALLing Perl with lots of privs, which is a really, really bad idea, so don't.
+PIDs than SHOW SYSTEM will. Nothing we can do about that, short if
+INSALLing Perl with lots of privs, which is a really, really bad idea, so
+don't.
+
+No object or tied hash interface just yet.
+
+Quadword values are returned as string values rather than integers.
+
+Privilege info's not returned. Use VMS::Priv for that.
+
+List info (rightslist and exceptions vectors) are not returned.
+
+The bitmap decoder doesn't grok the CURRENT_USERCAP_MASK, MSGMASK, or
+PERMANENT_USERCAP_MASK fields, as I don't know where the bitmask defs for
+them are in the header files. When I do, support will get added.
 
 =head1 AUTHOR
 
-Dan Sugalski <sugalsd@lbcc.cc.or.us>
+Dan Sugalski <sugalskd@osshe.edu>
 
 =head1 SEE ALSO
 
-perl(1), VMS::ProcInfo.
+perl(1)
 
 =cut

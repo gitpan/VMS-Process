@@ -17,3 +17,20 @@ Revision history for Perl extension VMS::Process.
 1.00  Mon Sep 29 11:31:00 1997
     - Made a few tweaks to get it to compile and run properly on an OpenVMS
       Alpha 6.2 cluster system. Seems to be release quality, so it is.
+
+1.01  Tue Nov 25 17:50:00 1997
+    - Started the merge of Process and ProcInfo.
+    - Fixed some typos in the README
+    - Disabled the tied hash and object interfaces for right now, until I
+      can get them better sorted out.
+
+1.02  Wed Nov 26 8:19:03 1997
+    - It's alive! Final debugging and testing, and it works. Function only,
+      but it's a darned good start, I think.
+
+1.03  Wed Nov 26 8:57:12 1997
+    - Can't resist tweaking some. Made doc changes to Process.PM
+
+1.04  Thu Jan 15 14:17:43 1998
+    - Forgot DFWSCNT! How could I have forgotten that? :) Added it in.
+    - Minor doc tweak. (Took out mention of ProcInfo, which has gone away)

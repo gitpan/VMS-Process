@@ -4,5 +4,5 @@ MANIFEST
 Process.pm
 Process.xs
 readme
-tryit.pl
 t/basic.t
+show_sys_clone.pl
