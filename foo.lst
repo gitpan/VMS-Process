@@ -1,0 +1,59 @@
+
+Mailing lists:
+  Name: GCA-BETA
+  Owner: "SUGALSD@GW.LBCC.CC.OR.US"
+         "SUGALSD@PLUTO.LBCC.CC.OR.US"
+         "OWNER-GCA-BETA@PLUTO.LBCC.CC.OR.US"
+         "sugalsd@LISTS.SIDHE.ORG"
+  Reply-to: List, NOSender
+  Archive: MX_ROOT:[MLF.MAILING_LISTS.ARCHIVE.GCA-BETA]
+  Add message: GCA-BETA_ADD_MESSAGE.TXT
+  Remove message: GCA-BETA_REMOVE_MESSAGE.TXT
+  Description: GCA beta 2.0 discussion list
+  Errors-to: SUGALSD@STARGATE.LBCC.CC.OR.US
+  Return address: GCA-BETA@LISTS.SIDHE.ORG
+  Strip header: Received, NOOther
+  Private list: No
+  Case sensitive: No
+  Digest support: Yes
+  Protection: (SYSTEM:RWED,OWNER:RWED,GROUP:RWED,WORLD:E)
+
+  Name: GCA-L
+  Owner: "owner-gca-l@PLUTO.LBCC.CC.OR.US"
+         "owner-gca-l@LISTS.SIDHE.ORG"
+         "sugalsd@PLUTO.LBCC.CC.OR.US"
+         "sugalsd@LISTS.SIDHE.ORG"
+         "sugalsd@STARGATE.LBCC.CC.OR.US"
+  Reply-to: List, NOSender
+  Archive: MX_ROOT:[MLF.MAILING_LISTS.ARCHIVE.GCA-L]
+  Add message: GCA-L_ADD_MESSAGE.TXT
+  Remove message: GCA-L_REMOVE_MESSAGE.TXT
+  Description: Discussion of GCA v2.0
+  Errors-to: SUGALSD@STARGATE.LBCC.CC.OR.US
+  Return address: GCA-L@LISTS.SIDHE.ORG
+  Strip header: NOReceived, NOOther
+  Private list: No
+  Case sensitive: No
+  Digest support: Yes
+  Protection: (SYSTEM:RWED,OWNER:RWED,GROUP:RWED,WORLD:E)
+
+  Name: BVMS
+  Owner: "sugalsd@STARGATE.LBCC.CC.OR.US"
+         "sugalsd@LISTS.SIDHE.ORG"
+         "sugalsd@PLUTO.LBCC.CC.OR.US"
+         "owner-bvms@LISTS.SIDHE.ORG"
+         "owner-bvms@PLUTO.LBCC.CC.OR.US"
+  Reply-to: List, NOSender
+  Archive: MX_ROOT:[MLF.MAILING_LISTS.ARCHIVE.BVMS]
+  Add message: BMVS_ADD_MESSAGE.TXT
+  Remove message: BMVS_REMOVE_MESSAGE.TXT
+  Description: Discussion of SCT's BANNER product on VMS
+  Errors-to: SUGALSD@STARGATE.LBCC.CC.OR.US
+  Return address: BVMS@LISTS.SIDHE.ORG
+  Strip header: NOReceived, NOOther
+  Private list: No
+  Case sensitive: No
+  Digest support: Yes
+  Protection: (SYSTEM:RWED,OWNER:RWED,GROUP:W,WORLD)
+
+

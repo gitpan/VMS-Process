@@ -13,7 +13,7 @@ require DynaLoader;
 @EXPORT = qw();
 @EXPORT_OK = qw(&process_list &suspend_process &release_process
                 &kill_process &change_priority);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 bootstrap VMS::Process $VERSION;
 
@@ -61,11 +61,12 @@ VMS::Process - Perl extension to manage processes
 
   use VMS::Process;
 
-  @pid_list = process_list([\%process_characteristics]);
+  @pid_list = process_list([@process_characteristics]);
   $WorkedOK = suspend_process($pid);
   $WorkedOK = release_process($pid);
   $WorkedOK = kill_process($pid);
   $WorkedOK = change_priority($pid, $priority);
+  @char_list = valid_process_chars();
 
 =head1 DESCRIPTION
 
@@ -76,9 +77,50 @@ a program can't see or modify processes that the process doesn't have the
 privs to see. Once process pids are available, information about those
 processes can be retrieved with the VMS::ProcInfo module.
 
-The process_list function takes an optional reference to a hash with the
-characteristics of the processes whose pids will be returned. Each hash
-element can be either a scalar or a list. 
+=head2 Narrowing down the PID list from C<process_list()>
+
+process_list uses the VMS $PROCESS_SCAN system service to narrow down the
+list of PIDs that it returns. Normally, a full-wildcard scan is done,
+returning all the PIDs for all the cluster nodes that your process has
+privileges to see. Oftentimes, though, you'll get more PIDS than you really
+want.
+
+The process_list function takes an optional reference to a list with the
+characteristics of the processes whose pids will be returned. Each element
+of the list is a hash struct with required NAME and VALUE elements, and 
+optional COMPARISION and MODIFIER elements.
+
+The NAME element is the name of the thing you want to select on. They're
+the names of the constants that $PROCESS_SCAN takes, minus the leading
+PSCAN$_. A list is available from the C<process_list_names()> function.
+
+Some of the items you can select on, specifically JOBTYPE, MODE, and STATE,
+take symbolic values instead of integers. Rather than having to figure out
+what the constant SCH$C_MWAIT really is, you can use "MWAIT" instead.
+
+The VALUE element is the value being compared to. It will be used either in
+an integer or string context, depending on what NAME is.
+
+The COMPARISON element specifies what sort of comparison should be
+made. The choices are C<gt>, C<lt>, C<eq>, C<le>, C<ge>, C<ne>, C<pre>, and
+C<*>, for greater than, less than, equal, less than or equal greater than
+or equal, not equal, prefix match, or wildcard matching.
+
+If the COMPARISON element is not specified, C<eq> is assumed.
+
+The MODIFIER element specifies the special things that affect this list
+item. They are C<|>, C<&&>, C<||>, and C<I>. C<|> indicates this entry
+should be ORd with the I<next> entry. C<&&> is a bitwise AND, and C<||> is
+a bitwise OR (valid only for bitmask items). C<I> makes comparisons case
+insensitive, and is valid only for string comparisions.
+
+The standard VMS wildcards are used--C<*> for any characters, and C<%> for
+one character. Sorry, no Perl regexps.
+
+=head2 Getting valid NAME names
+
+The function C<process_list_names()> returns a list of all the valid names
+that can be used as elements for the C<process_list()> function.
 
 =head1 BUGS
 
@@ -90,7 +132,10 @@ would normally have privs to see.
 
 =head1 LIMITATIONS
 
-The processing of the process characteristics hash is pretty simplistic. 
+The list built and passed to $PROCESS_SCAN in the order that they're passed
+to C<process_list>. This means you must follow the rules and limitations of
+$PROCESS_SCAN. The biggest being that OR'd items I<must> be of the same
+type. (No ORing NODENAME and USERNAME, for example)
 
 The tests are really primitive. (Like there aren't any right now)
 

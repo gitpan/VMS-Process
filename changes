@@ -1,6 +1,11 @@
 Revision history for Perl extension VMS::Process.
 
-0.01  Thu Sep 18 12:22:04
+0.01  Thu Sep 18 12:22:04 1997
 	- Copied over from VMS::ProcInfo. (Yes, I know they're not all that
       similar. It was a place to start)
 
+0.02  Mon Sep 22 11:40:04 1997
+    - Added support for passing an array ref to process_list()
+    - Added support in for handling COMPARISON and MODIFIER elements
+    - Added in enum support, so you can pass names to STATE, MODE, and
+      JOBTYPE.
