@@ -9,3 +9,7 @@ Revision history for Perl extension VMS::Process.
     - Added support in for handling COMPARISON and MODIFIER elements
     - Added in enum support, so you can pass names to STATE, MODE, and
       JOBTYPE.
+
+0.03  Tue Sep 23 10:00:00 1997
+    - Took the pre and * things out of COMPARISONS and put 'em in
+      MODIFIERS where they really belong.

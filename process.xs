@@ -215,10 +215,6 @@ get_comparison_bits(char *Comparison)
     ReturnVal = PSCAN$M_GEQ;
   else if (!strcmp(Comparison, "ne"))
     ReturnVal = PSCAN$M_NEQ;
-  else if (!strcmp(Comparison, "pre"))
-    ReturnVal = PSCAN$M_PREFIX_MATCH;
-  else if (!strcmp(Comparison, "*"))
-    ReturnVal = PSCAN$M_WILDCARD;
   
   return ReturnVal;
 }
@@ -236,6 +232,10 @@ get_modifier_bits(char *Modifier)
     ReturnVal = PSCAN$M_BIT_ANY;
   else if (!strcmp(Modifier, "I"))
     ReturnVal = PSCAN$M_CASE_BLIND;
+  else if (!strcmp(Comparison, "pre"))
+    ReturnVal = PSCAN$M_PREFIX_MATCH;
+  else if (!strcmp(Comparison, "*"))
+    ReturnVal = PSCAN$M_WILDCARD;
   
   return ReturnVal;
 }

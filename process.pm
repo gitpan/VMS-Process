@@ -13,7 +13,7 @@ require DynaLoader;
 @EXPORT = qw();
 @EXPORT_OK = qw(&process_list &suspend_process &release_process
                 &kill_process &change_priority);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 bootstrap VMS::Process $VERSION;
 
@@ -102,17 +102,20 @@ The VALUE element is the value being compared to. It will be used either in
 an integer or string context, depending on what NAME is.
 
 The COMPARISON element specifies what sort of comparison should be
-made. The choices are C<gt>, C<lt>, C<eq>, C<le>, C<ge>, C<ne>, C<pre>, and
-C<*>, for greater than, less than, equal, less than or equal greater than
-or equal, not equal, prefix match, or wildcard matching.
+made. The choices are C<gt>, C<lt>, C<eq>, C<le>, C<ge>, and C<ne>, for
+greater than, less than, equal, less than or equal, greater than or equal,
+or not equal.
 
 If the COMPARISON element is not specified, C<eq> is assumed.
 
 The MODIFIER element specifies the special things that affect this list
-item. They are C<|>, C<&&>, C<||>, and C<I>. C<|> indicates this entry
-should be ORd with the I<next> entry. C<&&> is a bitwise AND, and C<||> is
-a bitwise OR (valid only for bitmask items). C<I> makes comparisons case
-insensitive, and is valid only for string comparisions.
+item. They are C<pre>, C<*>, C<|>, C<&&>, C<||>, and C<I>. C<pre> indicates
+the list item is a prefix, and tacks on an implicit trailing C<*>. C<*>
+indicates the item has one or more wildcards in it, and VMS should do
+wildcard matching. C<|> indicates this entry should be ORd with the I<next>
+entry. C<&&> is a bitwise AND, and C<||> is a bitwise OR (valid only for
+bitmask items). C<I> makes comparisons case insensitive, and is valid only
+for string comparisions.
 
 The standard VMS wildcards are used--C<*> for any characters, and C<%> for
 one character. Sorry, no Perl regexps.
@@ -138,6 +141,8 @@ $PROCESS_SCAN. The biggest being that OR'd items I<must> be of the same
 type. (No ORing NODENAME and USERNAME, for example)
 
 The tests are really primitive. (Like there aren't any right now)
+
+Currently only one modifier may be used for each item.
 
 VMS system security is in force, so process_list() is likely to show fewer
 PIDs than SHOW SYSTEM will. Nothing we can do about that, short if INSALLing Perl with lots of privs, which is a really, really bad idea, so don't.
