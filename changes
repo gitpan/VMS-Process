@@ -1,0 +1,6 @@
+Revision history for Perl extension VMS::Process.
+
+0.01  Thu Sep 18 12:22:04
+	- Copied over from VMS::ProcInfo. (Yes, I know they're not all that
+      similar. It was a place to start)
+
