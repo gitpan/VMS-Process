@@ -34,3 +34,13 @@ Revision history for Perl extension VMS::Process.
 1.04  Thu Jan 15 14:17:43 1998
     - Forgot DFWSCNT! How could I have forgotten that? :) Added it in.
     - Minor doc tweak. (Took out mention of ProcInfo, which has gone away)
+
+1.05  Tue May 26 13:15:43 1998
+    - Tweaked some for Vax builds. (#ifdef'd out all the references to
+      Quadwords and __int64s)
+
+1.06  Fri Oct 02 20:43:03 1998
+    - Fixed up the item pre-clear code in process_list
+    - Fixed another dopey programming error that filled in the wrong SV in
+      some cases. (Duh!)
+    Both these fixes courtesy of Sebastian Bazley.

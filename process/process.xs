@@ -76,15 +76,6 @@ typedef struct {char  *ItemName;         /* Name of the item we're getting */
     else \
     hv_store((HVPointer), (HVEntryName), strlen((HVEntryName)), &sv_no, 0);}   
 
-#define IS_STRING 1
-#define IS_LONGWORD 2
-#define IS_QUADWORD 3
-#define IS_WORD 4
-#define IS_BYTE 5
-#define IS_VMSDATE 6
-#define IS_BITMAP 7   /* Each bit in the return value indicates something */
-#define IS_ENUM 8     /* Each returned value has a name, and we ought to */
-                      /* return the name instead of the value */
 struct ProcessID {
   char *ProcListName; /* Pointer to the item name */
   int  PSCANValue;      /* Value to use in the process_scan item list */
@@ -561,7 +552,7 @@ process_list(...)
   unsigned int ProcessContext = 0;
 
   /* First, zero out as much of the array as we're using */
-  Zero(&ProcScanItemList, items == 0 ? 2 : items, ITMLST);
+  Zero(&ProcScanItemList, items == 0 ? 2 : items + 1, ITMLST);
   
   /* Did they pass us anything? */
   if (items == 0) {
@@ -612,7 +603,7 @@ process_list(...)
       }
       /* If we've got a modifier op, get its flags and see what we get */
       if (hv_exists_ent((HV *)RealSV, ModifierConstSV, 0)) {
-        ComparisonSV = *hv_fetch((HV *)RealSV, "MODIFIER", 8, 0);
+        ModifierSV = *hv_fetch((HV *)RealSV, "MODIFIER", 8, 0);
         FlagsVal = FlagsVal | get_modifier_bits(SvPV(ModifierSV, na));
       }
       switch(ItemType) {
@@ -765,7 +756,9 @@ get_one_proc_info_item(pid, infoname)
   unsigned short ReturnWordBuffer;     /* Return buffer for words */
   unsigned long ReturnLongWordBuffer;  /* Return buffer for longwords */
   unsigned short BufferLength;
+#ifdef __ALPHA
   unsigned __int64 ReturnQuadWordBuffer;
+#endif
   int status;
   unsigned short ReturnedTime[7];
   char AsciiTime[100];
@@ -804,12 +797,14 @@ get_one_proc_info_item(pid, infoname)
       
       /* Done */
       break;
+#ifdef __ALPHA
     case IS_QUADWORD:
       /* Fill in the item list */
       init_itemlist(&OneItem[0], ProcInfoList[i].BufferLen,
                     ProcInfoList[i].JPIValue, &ReturnQuadWordBuffer,
                     &BufferLength);
       break;
+#endif
     case IS_ENUM:
     case IS_BITMAP:
     case IS_LONGWORD:
@@ -836,10 +831,12 @@ get_one_proc_info_item(pid, infoname)
         /* Give back the buffer */
         free(ReturnStringBuffer);
         break;
+#ifdef __ALPHA
       case IS_QUADWORD:
         sprintf(QuadWordString, "%llu", ReturnQuadWordBuffer);
         ST(0) = sv_2mortal(newSVpv(QuadWordString, 0));
         break;
+#endif
       case IS_VMSDATE:
         sys$numtim(ReturnedTime, ReturnStringBuffer);
         sprintf(AsciiTime, "%02hi-%s-%hi %02hi:%02hi:%02hi.%hi",
@@ -880,7 +877,9 @@ get_all_proc_info_items(pid)
      ITMLST *ListOItems;
      unsigned short *ReturnLengths;
      long *TempLongPointer;
+#ifdef __ALPHA
      __int64 *TempQuadPointer;
+#endif
      FetchedItem *OurDataList;
      int i, status;
      HV *AllPurposeHV;
@@ -961,6 +960,7 @@ get_all_proc_info_items(pid)
                     newSViv(*TempLongPointer),
                     0);
            break;
+#ifdef __ALPHA
          case IS_QUADWORD:
            TempQuadPointer = OurDataList[i].ReturnBuffer;
            sprintf(QuadWordString, "%llu", *TempQuadPointer);
@@ -968,7 +968,7 @@ get_all_proc_info_items(pid)
                     strlen(OurDataList[i].ItemName),
                     newSVpv(QuadWordString, 0), 0);
            break;
-             
+#endif
          }
        }
        ST(0) = newRV_noinc((SV *) AllPurposeHV);

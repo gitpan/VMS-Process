@@ -15,7 +15,7 @@ require DynaLoader;
                 &kill_process &change_priority &proc_info_names
                 &get_all_proc_info_items       &get_one_proc_info_item
                 &decode_proc_info_bitmap);
-$VERSION = '1.04';
+$VERSION = '1.06';
 
 bootstrap VMS::Process $VERSION;
 

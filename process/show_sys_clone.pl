@@ -10,7 +10,7 @@ foreach $pid (sort @foo) {
   $procinfo = get_all_proc_info_items($pid);
   print sprintf("%8.8x", $pid), " ";
   print sprintf("%-15.15s ", $procinfo->{PRCNAM});
-  print $procinfo->{"STATE"}, "\t";
+  print $procinfo->{STATE}, "\t";
   print $procinfo->{PRI}, "\t";
   print $procinfo->{NODENAME}, "\t";
   $cputime = $procinfo->{CPUTIM};
