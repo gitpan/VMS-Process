@@ -13,3 +13,7 @@ Revision history for Perl extension VMS::Process.
 0.03  Tue Sep 23 10:00:00 1997
     - Took the pre and * things out of COMPARISONS and put 'em in
       MODIFIERS where they really belong.
+
+1.00  Mon Sep 29 11:31:00 1997
+    - Made a few tweaks to get it to compile and run properly on an OpenVMS
+      Alpha 6.2 cluster system. Seems to be release quality, so it is.

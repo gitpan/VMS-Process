@@ -232,9 +232,9 @@ get_modifier_bits(char *Modifier)
     ReturnVal = PSCAN$M_BIT_ANY;
   else if (!strcmp(Modifier, "I"))
     ReturnVal = PSCAN$M_CASE_BLIND;
-  else if (!strcmp(Comparison, "pre"))
+  else if (!strcmp(Modifier, "pre"))
     ReturnVal = PSCAN$M_PREFIX_MATCH;
-  else if (!strcmp(Comparison, "*"))
+  else if (!strcmp(Modifier, "*"))
     ReturnVal = PSCAN$M_WILDCARD;
   
   return ReturnVal;

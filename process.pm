@@ -13,7 +13,7 @@ require DynaLoader;
 @EXPORT = qw();
 @EXPORT_OK = qw(&process_list &suspend_process &release_process
                 &kill_process &change_priority);
-$VERSION = '0.03';
+$VERSION = '1.00';
 
 bootstrap VMS::Process $VERSION;
 
