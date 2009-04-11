@@ -45,7 +45,9 @@ Revision history for Perl extension VMS::Process.
       some cases. (Duh!)
     Both these fixes courtesy of Sebastian Bazley.
 
-1.05 Sat Apr 11 09:44:00 2009
-- Changed C<#ifdef __ALPHA> to C<#ifndef __VAX> so we can run on OpenVMS I64.
-- Modernized a few global variables (e.g., sv_yes -> PL_sv_yes).
+1.07 Sat Apr 11 09:44:00 2009
+    - Changed C<#ifdef __ALPHA> to C<#ifndef __VAX> so we can run on OpenVMS I64.
+    - Modernized a few global variables (e.g., sv_yes -> PL_sv_yes).
 
+1.08 Sat Apr 11 10:11:00 2009
+    - PAUSE refused to index 1.07

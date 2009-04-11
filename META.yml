@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               VMS-Process
-version:            1.07
+version:            1.08
 abstract:           Manage processes and retrieve process information on OpenVMS systems
 author:
     - Dan Sugalski <dan@sidhe.org>, Craig A. Berry <craigberry@mac.com>

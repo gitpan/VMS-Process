@@ -535,6 +535,8 @@ enum_name(long jpi_entry, long val_to_deenum)
 
 MODULE = VMS::Process		PACKAGE = VMS::Process		
 
+PROTOTYPES: DISABLE
+
 void
 process_list(...)
    PPCODE:
