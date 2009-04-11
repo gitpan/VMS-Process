@@ -15,7 +15,7 @@ require DynaLoader;
                 &kill_process &change_priority &proc_info_names
                 &get_all_proc_info_items       &get_one_proc_info_item
                 &decode_proc_info_bitmap);
-$VERSION = '1.06';
+$VERSION = '1.07';
 
 bootstrap VMS::Process $VERSION;
 
@@ -49,8 +49,7 @@ __END__
 
 =head1 NAME
 
-VMS::Process - Perl extension to manage processes and retrieve process
-information
+VMS::Process - Manage processes and retrieve process information on OpenVMS systems
 
 =head1 SYNOPSIS
 
@@ -151,7 +150,7 @@ would normally have privs to see.
 
 =head1 LIMITATIONS
 
-The list built and passed to $PROCESS_SCAN in the order that they're passed
+The list is built and passed to $PROCESS_SCAN in the order that they're passed
 to C<process_list>. This means you must follow the rules and limitations of
 $PROCESS_SCAN. The biggest being that OR'd items I<must> be of the same
 type. (No ORing NODENAME and USERNAME, for example)
@@ -177,7 +176,9 @@ them are in the header files. When I do, support will get added.
 
 =head1 AUTHOR
 
-Dan Sugalski <sugalskd@osshe.edu>
+Dan Sugalski <dan@sidhe.org>
+
+Craig A. Berry <craigberry@mac.com>
 
 =head1 SEE ALSO
 

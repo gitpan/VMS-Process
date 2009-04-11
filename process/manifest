@@ -1,8 +1,0 @@
-CHANGES
-Makefile.PL
-MANIFEST
-Process.pm
-Process.xs
-readme
-t/basic.t
-show_sys_clone.pl

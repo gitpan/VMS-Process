@@ -1,17 +1,13 @@
 /* VMS::Process - Get a list of processes, or manage processes
  *
- * Version: 1.01
- * Author:  Dan Sugalski <sugalsks@osshe.edu>
- * Revised: 25-Nov-1997
+ * Version: 1.07
+ * Author:  Dan Sugalski <dan@sidhe.org>
+ * Maintainer: Craig A. Berry <craigberry@mac.com>
  *
  *
  * Revision History:
  *
- * 0.1  18-Sep-1997 Dan Sugalski <sugalskd@osshe.edu>
- *      Snagged base code from VMS::ProcInfo.XS
- *
- * 1.01 25-Nov-1997 Dan Sugalski <sugalskd@osshe.edu>
- *      Merged VMS::ProcInfo into VMS::Process
+ *    See Changes file.
  *
  */
 
@@ -72,9 +68,9 @@ typedef struct {char  *ItemName;         /* Name of the item we're getting */
 #define bit_test(HVPointer, BitToCheck, HVEntryName, EncodedMask) \
 { \
     if ((EncodedMask) && (BitToCheck)) \
-    hv_store((HVPointer), (HVEntryName), strlen((HVEntryName)), &sv_yes, 0); \
+    hv_store((HVPointer), (HVEntryName), strlen((HVEntryName)), &PL_sv_yes, 0); \
     else \
-    hv_store((HVPointer), (HVEntryName), strlen((HVEntryName)), &sv_no, 0);}   
+    hv_store((HVPointer), (HVEntryName), strlen((HVEntryName)), &PL_sv_no, 0);}   
 
 struct ProcessID {
   char *ProcListName; /* Pointer to the item name */
@@ -461,7 +457,7 @@ enum_name(long jpi_entry, long val_to_deenum)
   case JPI$_MODE:
     sv_setpv(WorkingSV, ModeNames[val_to_deenum]);
     break;
-#ifdef __ALPHA
+#ifndef __VAX
   case JPI$_SCHED_POLICY:
     switch (val_to_deenum) {
     case JPI$K_DEFAULT_POLICY:
@@ -593,22 +589,22 @@ process_list(...)
 
       NameSV = *hv_fetch((HV *)RealSV, "NAME", 4, 0);
       ValueSV = *hv_fetch((HV *)RealSV, "VALUE", 5, 0);
-      ItemType = get_item_type(SvPV(NameSV, na));
-      ItemPScanVal = get_item_pscan_val(SvPV(NameSV, na));
+      ItemType = get_item_type(SvPV_nolen(NameSV));
+      ItemPScanVal = get_item_pscan_val(SvPV_nolen(NameSV));
       FlagsVal = 0; /* By default we have no flags */
       /* If we've got a comparison op, get its flags and see what we get */
       if (hv_exists_ent((HV *)RealSV, ComparisonConstSV, 0)) {
         ComparisonSV = *hv_fetch((HV *)RealSV, "COMPARISON", 10, 0);
-        FlagsVal = FlagsVal | get_comparison_bits(SvPV(ComparisonSV, na));
+        FlagsVal = FlagsVal | get_comparison_bits(SvPV_nolen(ComparisonSV));
       }
       /* If we've got a modifier op, get its flags and see what we get */
       if (hv_exists_ent((HV *)RealSV, ModifierConstSV, 0)) {
         ModifierSV = *hv_fetch((HV *)RealSV, "MODIFIER", 8, 0);
-        FlagsVal = FlagsVal | get_modifier_bits(SvPV(ModifierSV, na));
+        FlagsVal = FlagsVal | get_modifier_bits(SvPV_nolen(ModifierSV));
       }
       switch(ItemType) {
       case IS_STRING:
-        TempStringPointer = SvPV(ValueSV, na);
+        TempStringPointer = SvPV_nolen(ValueSV);
         init_bufitemlist(&ProcScanItemList[i], strlen(TempStringPointer),
                          ItemPScanVal, TempStringPointer, FlagsVal);
         break;
@@ -617,7 +613,7 @@ process_list(...)
                          FlagsVal);
         break;
       case IS_ENUM:
-        TempStringPointer = SvPV(ValueSV, na);
+        TempStringPointer = SvPV_nolen(ValueSV);
         init_lititemlist(&ProcScanItemList[i], ItemPScanVal,
                          de_enum(ItemPScanVal, TempStringPointer),
                          FlagsVal);
@@ -657,7 +653,7 @@ process_list(...)
     }
   } else {
     SETERRNO(EVMSERR, status);
-    ST(0) = &sv_undef;
+    ST(0) = &PL_sv_undef;
   }
 }
 
@@ -670,9 +666,9 @@ suspend_process(pid)
   status = sys$suspnd(&pid, NULL, NULL);
   if (status != SS$_NORMAL) {
     SETERRNO(EVMSERR, status);
-    ST(0) = &sv_no;
+    ST(0) = &PL_sv_no;
   } else {
-    ST(0) = &sv_yes;
+    ST(0) = &PL_sv_yes;
   }
 }
 
@@ -685,9 +681,9 @@ release_process(pid)
   status = sys$resume(&pid, NULL);
   if (status != SS$_NORMAL) {
     SETERRNO(EVMSERR, status);
-    ST(0) = &sv_no;
+    ST(0) = &PL_sv_no;
   } else {
-    ST(0) = &sv_yes;
+    ST(0) = &PL_sv_yes;
   }
 }
 
@@ -700,9 +696,9 @@ kill_process(pid)
   status = sys$delprc(&pid, NULL);
   if (status != SS$_NORMAL) {
     SETERRNO(EVMSERR, status);
-    ST(0) = &sv_no;
+    ST(0) = &PL_sv_no;
   } else {
-    ST(0) = &sv_yes;
+    ST(0) = &PL_sv_yes;
   }
 }
 
@@ -717,9 +713,9 @@ change_priority(pid, newpriority)
   status = sys$setpri(&pid, NULL, newpriority, &OldPriority, NULL, NULL);
   if (status != SS$_NORMAL) {
     SETERRNO(EVMSERR, status);
-    ST(0) = &sv_no;
+    ST(0) = &PL_sv_no;
   } else {
-    ST(0) = &sv_yes;
+    ST(0) = &PL_sv_yes;
   }
 }
 
@@ -756,7 +752,7 @@ get_one_proc_info_item(pid, infoname)
   unsigned short ReturnWordBuffer;     /* Return buffer for words */
   unsigned long ReturnLongWordBuffer;  /* Return buffer for longwords */
   unsigned short BufferLength;
-#ifdef __ALPHA
+#ifndef __VAX
   unsigned __int64 ReturnQuadWordBuffer;
 #endif
   int status;
@@ -765,7 +761,7 @@ get_one_proc_info_item(pid, infoname)
   char QuadWordString[65];
   
   for (i = 0; ProcInfoList[i].ProcInfoName; i++) {
-    if (strEQ(ProcInfoList[i].ProcInfoName, SvPV(infoname, na))) {
+    if (strEQ(ProcInfoList[i].ProcInfoName, SvPV_nolen(infoname))) {
       break;
     }
   }
@@ -773,7 +769,7 @@ get_one_proc_info_item(pid, infoname)
   /* Did we find a match? If not, complain and exit */
   if (ProcInfoList[i].ProcInfoName == NULL) {
     warn("Invalid proc info item");
-    ST(0) = &sv_undef;
+    ST(0) = &PL_sv_undef;
   } else {
     /* allocate our item list */
     ITMLST OneItem[2];
@@ -797,7 +793,7 @@ get_one_proc_info_item(pid, infoname)
       
       /* Done */
       break;
-#ifdef __ALPHA
+#ifndef __VAX
     case IS_QUADWORD:
       /* Fill in the item list */
       init_itemlist(&OneItem[0], ProcInfoList[i].BufferLen,
@@ -815,7 +811,7 @@ get_one_proc_info_item(pid, infoname)
       break;
     default:
       warn("Unknown item return type");
-      ST(0) = &sv_undef;
+      ST(0) = &PL_sv_undef;
       return;
     }
     
@@ -831,7 +827,7 @@ get_one_proc_info_item(pid, infoname)
         /* Give back the buffer */
         free(ReturnStringBuffer);
         break;
-#ifdef __ALPHA
+#ifndef __VAX
       case IS_QUADWORD:
         sprintf(QuadWordString, "%llu", ReturnQuadWordBuffer);
         ST(0) = sv_2mortal(newSVpv(QuadWordString, 0));
@@ -854,14 +850,14 @@ get_one_proc_info_item(pid, infoname)
         ST(0) =  sv_2mortal(newSViv(ReturnLongWordBuffer));
         break;
       default:
-        ST(0) = &sv_undef;
+        ST(0) = &PL_sv_undef;
         break;
       }
 
       
     } else {
       SETERRNO(EVMSERR, status);
-      ST(0) = &sv_undef;
+      ST(0) = &PL_sv_undef;
       /* free up the buffer if we were looking for a string */
       if (ProcInfoList[i].ReturnType == IS_STRING)
         free(ReturnStringBuffer);
@@ -877,7 +873,7 @@ get_all_proc_info_items(pid)
      ITMLST *ListOItems;
      unsigned short *ReturnLengths;
      long *TempLongPointer;
-#ifdef __ALPHA
+#ifndef __VAX
      __int64 *TempQuadPointer;
 #endif
      FetchedItem *OurDataList;
@@ -960,7 +956,7 @@ get_all_proc_info_items(pid)
                     newSViv(*TempLongPointer),
                     0);
            break;
-#ifdef __ALPHA
+#ifndef __VAX
          case IS_QUADWORD:
            TempQuadPointer = OurDataList[i].ReturnBuffer;
            sprintf(QuadWordString, "%llu", *TempQuadPointer);
@@ -975,7 +971,7 @@ get_all_proc_info_items(pid)
      } else {
        /* I think we failed */
        SETERRNO(EVMSERR, status);
-       ST(0) = &sv_undef;
+       ST(0) = &PL_sv_undef;
      }
 
      /* Free up our allocated memory */
@@ -1096,6 +1092,6 @@ decode_proc_info_bitmap(InfoName, BitmapValue)
   if (AllPurposeHV) {
     ST(0) = (SV *)AllPurposeHV;
   } else {
-    ST(0) = &sv_undef;
+    ST(0) = &PL_sv_undef;
   }
 }

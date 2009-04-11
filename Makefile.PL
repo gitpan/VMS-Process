@@ -3,7 +3,9 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     'NAME'	=> 'VMS::Process',
+    'AUTHOR'	=> 'Dan Sugalski <dan@sidhe.org>, Craig A. Berry <craigberry@mac.com>',
     'VERSION_FROM' => 'Process.pm', # finds $VERSION
+    'ABSTRACT_FROM' => 'Process.pm',
     'LIBS'	=> [''],   # e.g., '-lm' 
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
     'INC'	=> '',     # e.g., '-I/usr/include/other'
