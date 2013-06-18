@@ -15,7 +15,7 @@ require DynaLoader;
                 &kill_process &change_priority &proc_info_names
                 &get_all_proc_info_items       &get_one_proc_info_item
                 &decode_proc_info_bitmap);
-$VERSION = '1.08';
+$VERSION = '1.09';
 
 bootstrap VMS::Process $VERSION;
 
@@ -142,11 +142,7 @@ that can be used as elements for the C<process_list()> function.
 
 =head1 BUGS
 
-May leak memory. May not, though.
-
-While process_list is supposed to take a hash ref, right now it
-doesn't. You get all the pids for the processes on the cluster that you
-would normally have privs to see.
+None known.
 
 =head1 LIMITATIONS
 

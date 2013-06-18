@@ -1,10 +1,10 @@
 CHANGES
-Makefile.PL
 MANIFEST
+META.json
+META.yml
+Makefile.PL
 Process.pm
 Process.xs
 README
-t/basic.t
 show_sys_clone.pl
-META.yml                                 Module meta-data (added by MakeMaker)
-META.yml                                 Module meta-data (added by MakeMaker)
+t/basic.t

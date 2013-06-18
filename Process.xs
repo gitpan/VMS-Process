@@ -1,6 +1,6 @@
 /* VMS::Process - Get a list of processes, or manage processes
  *
- * Version: 1.07
+ * Version: 1.09
  * Author:  Dan Sugalski <dan@sidhe.org>
  * Maintainer: Craig A. Berry <craigberry@mac.com>
  *
@@ -924,7 +924,7 @@ get_all_proc_info_items(pid)
      /* Did it go OK? */
      if (status == SS$_NORMAL) {
        /* Looks like it */
-       AllPurposeHV = newHV();
+       AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
        for (i = 0; i < ProcInfoCount; i++) {
          switch(OurDataList[i].ReturnType) {
          case IS_STRING:
@@ -991,9 +991,9 @@ decode_proc_info_bitmap(InfoName, BitmapValue)
      int BitmapValue
    CODE:
 {
-  HV *AllPurposeHV;
+  HV *AllPurposeHV = NULL;
   if (!strcmp(InfoName, "CREPRC_FLAGS")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
     bit_test(AllPurposeHV, PRC$M_BATCH, "BATCH", BitmapValue);
     bit_test(AllPurposeHV, PRC$M_DETACH, "DETACH", BitmapValue);
     bit_test(AllPurposeHV, PRC$M_DISAWS, "DISAWS", BitmapValue);
@@ -1011,10 +1011,10 @@ decode_proc_info_bitmap(InfoName, BitmapValue)
     bit_test(AllPurposeHV, PRC$M_TCB, "TCB", BitmapValue);
   } else {
   if (!strcmp(InfoName, "CURRENT_USERCAP_MASK")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
   } else {
   if (!strcmp(InfoName, "LOGIN_FLAGS")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
     bit_test(AllPurposeHV, JPI$M_NEW_MAIL_AT_LOGIN, "NEW_MAIL_AT_LOGIN", BitmapValue);
     bit_test(AllPurposeHV, JPI$M_PASSWORD_CHANGED, "PASSWORD_CHANGED", BitmapValue);
     bit_test(AllPurposeHV, JPI$M_PASSWORD_EXPIRED, "PASSWORD_EXPIRED", BitmapValue);
@@ -1024,13 +1024,13 @@ decode_proc_info_bitmap(InfoName, BitmapValue)
     bit_test(AllPurposeHV, JPI$M_PASSWORD2_EXPIRED, "PASSWORD2_EXPIRED", BitmapValue);
   } else {
   if (!strcmp(InfoName, "MSGMASK")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
   } else {
   if (!strcmp(InfoName, "PERMANENT_USERCAP_MASK")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
   } else {
   if (!strcmp(InfoName, "STS")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
     bit_test(AllPurposeHV, PCB$M_ASTPEN, "ASTPEN", BitmapValue);
     bit_test(AllPurposeHV, PCB$M_BATCH, "BATCH", BitmapValue);
     bit_test(AllPurposeHV, PCB$M_DELPEN, "DELPEN", BitmapValue);
@@ -1063,11 +1063,11 @@ decode_proc_info_bitmap(InfoName, BitmapValue)
     bit_test(AllPurposeHV, PCB$M_WALL, "WALL", BitmapValue);
   } else {
   if (!strcmp(InfoName, "STS2")) {
-    AllPurposeHV = newHV();
+    AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
     bit_test(AllPurposeHV, PCB$M_NOUNSHELVE, "NOUNSHELVE", BitmapValue);
   } else {
   if (!strcmp(InfoName, "UAF_FLAGS")) {
-     AllPurposeHV = newHV();
+     AllPurposeHV = (HV*)sv_2mortal((SV*)newHV());
      bit_test(AllPurposeHV, UAI$M_AUDIT, "AUDIT", BitmapValue);
      bit_test(AllPurposeHV, UAI$M_AUTOLOGIN, "AUTOLOGIN", BitmapValue);
      bit_test(AllPurposeHV, UAI$M_CAPTIVE, "CAPTIVE", BitmapValue);
